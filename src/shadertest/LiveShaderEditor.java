@@ -19,10 +19,10 @@ public class LiveShaderEditor {
         //
         // public void makeWindow() {
         new ESightNewtWindow(true, LiveShaderEditorInputHandler.getInstance(),
-                window, 1024, 768, "Shader Tester");
+                window, 2000, 2000, "Live Shader Editor");
 
         // Create the frame
-        final JFrame frame = new JFrame("- ST -");
+        final JFrame frame = new JFrame("- LSE -");
         frame.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent arg0) {
@@ -30,7 +30,7 @@ public class LiveShaderEditor {
             }
         });
 
-        frame.setSize(240, 240);
+        frame.setSize(100, 100);
 
         frame.setResizable(false);
 

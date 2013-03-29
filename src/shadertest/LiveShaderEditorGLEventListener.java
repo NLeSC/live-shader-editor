@@ -76,7 +76,8 @@ public class LiveShaderEditorGLEventListener extends ESightGLEventListener {
 
     private Color4 baseColor;
 
-    public LiveShaderEditorGLEventListener(LiveShaderEditorInputHandler inputHandler) {
+    public LiveShaderEditorGLEventListener(
+            LiveShaderEditorInputHandler inputHandler) {
         this.inputHandler = inputHandler;
         this.loader = new ShaderProgramLoader();
         this.font = FontFactory.get(fontSet).getDefault();
@@ -147,7 +148,7 @@ public class LiveShaderEditorGLEventListener extends ESightGLEventListener {
 
         try {
             renderScene(gl, mv.clone());
-            renderAxes(gl, mv.clone());
+            // renderAxes(gl, mv.clone());
             renderHUDText(gl, mv.clone());
 
             renderTexturesToScreen(gl, width, height);
@@ -254,9 +255,13 @@ public class LiveShaderEditorGLEventListener extends ESightGLEventListener {
             postprocessShader = loader.createProgram(gl, "postprocess",
                     new File("shaders/vs_postprocess.vp"), new File(
                             "shaders/fs_postprocess.fp"));
+
             setLiveFragmentShader(gl, liveShader, new File(
                     "shaders/vs_sunsurface.vp"),
                     "shaders/fs_animatedTurbulence.fp");
+
+            // setLiveVertexShader(gl, liveShader, "shaders/vs_sunsurface.vp",
+            // new File("shaders/fs_animatedTurbulence.fp"));
         } catch (final Exception e) {
             System.err.println("Error during shader creation: "
                     + e.getMessage());
@@ -276,7 +281,7 @@ public class LiveShaderEditorGLEventListener extends ESightGLEventListener {
         zAxis.init(gl);
 
         // TEST MODEL
-        testModel = new Sphere(3);
+        testModel = new Sphere(5);
         testModel.init(gl);
 
         // TEXT

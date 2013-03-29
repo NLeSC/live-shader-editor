@@ -9,7 +9,7 @@ uniform float OffsetRandomValue;
 
 out vec4 fragColor;
 
-const float brightnessMultiplyer = 6.0;
+const float brightnessMultiplyer = 1.0;
 
 void main() {	
 	vec3 Color1 = vec3(0,0,0);
