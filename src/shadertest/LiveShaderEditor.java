@@ -19,7 +19,7 @@ public class LiveShaderEditor {
         //
         // public void makeWindow() {
         new ESightNewtWindow(true, LiveShaderEditorInputHandler.getInstance(),
-                window, 2000, 2000, "Live Shader Editor");
+                window, 1920, 1080, "Live Shader Editor");
 
         // Create the frame
         final JFrame frame = new JFrame("- LSE -");
