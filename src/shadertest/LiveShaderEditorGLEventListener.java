@@ -32,8 +32,7 @@ import nl.esciencecenter.esight.text.jogampExperimental.Font;
 import nl.esciencecenter.esight.text.jogampExperimental.FontFactory;
 
 public class LiveShaderEditorGLEventListener extends ESightGLEventListener {
-    private ShaderProgram liveShader, postprocessShader, axesShader,
-            textShader;
+    private ShaderProgram liveShader, postprocessShader, textShader;
 
     private FBO starFBO, hudFBO, axesFBO;
     private Model FSQ_postprocess;
@@ -76,8 +75,7 @@ public class LiveShaderEditorGLEventListener extends ESightGLEventListener {
 
     private Color4 baseColor;
 
-    public LiveShaderEditorGLEventListener(
-            LiveShaderEditorInputHandler inputHandler) {
+    public LiveShaderEditorGLEventListener(LiveShaderEditorInputHandler inputHandler) {
         this.inputHandler = inputHandler;
         this.loader = new ShaderProgramLoader();
         this.font = FontFactory.get(fontSet).getDefault();
@@ -87,8 +85,7 @@ public class LiveShaderEditorGLEventListener extends ESightGLEventListener {
     public void display(GLAutoDrawable drawable) {
         try {
             final int status = drawable.getContext().makeCurrent();
-            if ((status != GLContext.CONTEXT_CURRENT)
-                    && (status != GLContext.CONTEXT_CURRENT_NEW)) {
+            if ((status != GLContext.CONTEXT_CURRENT) && (status != GLContext.CONTEXT_CURRENT_NEW)) {
                 System.err.println("Error swapping context to onscreen.");
             }
         } catch (final GLException e) {
@@ -103,12 +100,10 @@ public class LiveShaderEditorGLEventListener extends ESightGLEventListener {
         gl.glViewport(0, 0, canvasWidth, canvasHeight);
 
         if (newFragmentShader) {
-            setLiveFragmentShader(gl, liveShader, new File(
-                    "shaders/vs_sunsurface.vp"), newShaderFileName);
+            setLiveFragmentShader(gl, liveShader, new File("shaders/vs_sunsurface.vp"), newShaderFileName);
             newFragmentShader = false;
         } else if (newVertexShader) {
-            setLiveVertexShader(gl, liveShader, newShaderFileName, new File(
-                    "shaders/fs_animatedTurbulence.fp"));
+            setLiveVertexShader(gl, liveShader, newShaderFileName, new File("shaders/fs_animatedTurbulence.fp"));
             newVertexShader = false;
         }
 
@@ -131,16 +126,13 @@ public class LiveShaderEditorGLEventListener extends ESightGLEventListener {
         gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
         gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-        final Point4 eye = new Point4(
-                (float) (radius * Math.sin(ftheta) * Math.cos(phi)),
-                (float) (radius * Math.sin(ftheta) * Math.sin(phi)),
-                (float) (radius * Math.cos(ftheta)), 1.0f);
+        final Point4 eye = new Point4((float) (radius * Math.sin(ftheta) * Math.cos(phi)), (float) (radius
+                * Math.sin(ftheta) * Math.sin(phi)), (float) (radius * Math.cos(ftheta)), 1.0f);
         final Point4 at = new Point4(0.0f, 0.0f, 0.0f, 1.0f);
         final VecF4 up = new VecF4(0.0f, 1.0f, 0.0f, 0.0f);
 
         MatF4 mv = MatrixFMath.lookAt(eye, at, up);
-        mv = mv.mul(MatrixFMath.translate(new VecF3(0f, 0f, inputHandler
-                .getViewDist())));
+        mv = mv.mul(MatrixFMath.translate(new VecF3(0f, 0f, inputHandler.getViewDist())));
         mv = mv.mul(MatrixFMath.rotationX(inputHandler.getRotation().get(0)));
         mv = mv.mul(MatrixFMath.rotationY(inputHandler.getRotation().get(1)));
 
@@ -155,29 +147,6 @@ public class LiveShaderEditorGLEventListener extends ESightGLEventListener {
         } catch (final UninitializedException e) {
             e.printStackTrace();
         }
-    }
-
-    private void renderAxes(GL3 gl, MatF4 mv) throws UninitializedException {
-        axesFBO.bind(gl);
-        gl.glClear(GL.GL_DEPTH_BUFFER_BIT | GL.GL_COLOR_BUFFER_BIT);
-
-        final MatF4 p = MatrixFMath.perspective(fovy, aspect, zNear, zFar);
-        axesShader.setUniformMatrix("PMatrix", p);
-        axesShader.setUniformMatrix("MVMatrix", mv);
-
-        axesShader.setUniformVector("Color", new VecF4(1f, 0f, 0f, 1f));
-        axesShader.use(gl);
-        xAxis.draw(gl, axesShader);
-
-        axesShader.setUniformVector("Color", new VecF4(0f, 1f, 0f, 1f));
-        axesShader.use(gl);
-        yAxis.draw(gl, axesShader);
-
-        axesShader.setUniformVector("Color", new VecF4(0f, 0f, 1f, 1f));
-        axesShader.use(gl);
-        zAxis.draw(gl, axesShader);
-
-        axesFBO.unBind(gl);
     }
 
     @Override
@@ -198,8 +167,7 @@ public class LiveShaderEditorGLEventListener extends ESightGLEventListener {
     public void init(GLAutoDrawable drawable) {
         try {
             final int status = drawable.getContext().makeCurrent();
-            if ((status != GLContext.CONTEXT_CURRENT)
-                    && (status != GLContext.CONTEXT_CURRENT_NEW)) {
+            if ((status != GLContext.CONTEXT_CURRENT) && (status != GLContext.CONTEXT_CURRENT_NEW)) {
                 System.err.println("Error swapping context to onscreen.");
             }
         } catch (final GLException e) {
@@ -246,38 +214,28 @@ public class LiveShaderEditorGLEventListener extends ESightGLEventListener {
             File file1 = new File("shaders/vs_multiColorTextShader.vp");
             File file2 = new File("shaders/fs_multiColorTextShader.fp");
 
-            axesShader = loader.createProgram(gl, "axes", new File(
-                    "shaders/vs_axes.vp"), new File("shaders/fs_axes.fp"));
+            textShader = loader.createProgram(gl, "multiColorText", file1, file2);
 
-            textShader = loader.createProgram(gl, "multiColorText", file1,
-                    file2);
+            postprocessShader = loader.createProgram(gl, "postprocess", new File("shaders/vs_postprocess.vp"),
+                    new File("shaders/fs_postprocess.fp"));
 
-            postprocessShader = loader.createProgram(gl, "postprocess",
-                    new File("shaders/vs_postprocess.vp"), new File(
-                            "shaders/fs_postprocess.fp"));
-
-            setLiveFragmentShader(gl, liveShader, new File(
-                    "shaders/vs_sunsurface.vp"),
+            setLiveFragmentShader(gl, liveShader, new File("shaders/vs_sunsurface.vp"),
                     "shaders/fs_animatedTurbulence.fp");
 
             // setLiveVertexShader(gl, liveShader, "shaders/vs_sunsurface.vp",
             // new File("shaders/fs_animatedTurbulence.fp"));
         } catch (final Exception e) {
-            System.err.println("Error during shader creation: "
-                    + e.getMessage());
+            System.err.println("Error during shader creation: " + e.getMessage());
             e.printStackTrace();
             System.exit(1);
         }
 
         // AXES
-        xAxis = new Axis(new VecF3(-1f, 0f, 0f), new VecF3(1f, 0f, 0f), .1f,
-                .02f);
+        xAxis = new Axis(new VecF3(-1f, 0f, 0f), new VecF3(1f, 0f, 0f), .1f, .02f);
         xAxis.init(gl);
-        yAxis = new Axis(new VecF3(0f, -1f, 0f), new VecF3(0f, 1f, 0f), .1f,
-                .02f);
+        yAxis = new Axis(new VecF3(0f, -1f, 0f), new VecF3(0f, 1f, 0f), .1f, .02f);
         yAxis.init(gl);
-        zAxis = new Axis(new VecF3(0f, 0f, -1f), new VecF3(0f, 0f, 1f), .1f,
-                .02f);
+        zAxis = new Axis(new VecF3(0f, 0f, -1f), new VecF3(0f, 0f, 1f), .1f, .02f);
         zAxis.init(gl);
 
         // TEST MODEL
@@ -315,8 +273,7 @@ public class LiveShaderEditorGLEventListener extends ESightGLEventListener {
         gl.glClear(GL.GL_DEPTH_BUFFER_BIT | GL.GL_COLOR_BUFFER_BIT);
 
         // Draw
-        myText.draw(gl, textShader, canvasWidth, canvasHeight, 30f,
-                2f * canvasHeight - 40f);
+        myText.draw(gl, textShader, canvasWidth, canvasHeight, 30f, 2f * canvasHeight - 40f);
 
         hudFBO.unBind(gl);
     }
@@ -332,8 +289,7 @@ public class LiveShaderEditorGLEventListener extends ESightGLEventListener {
         String selection = myInputHandler.getSelectedText();
         int selectionIndex = myInputHandler.getSelectedTextIndex();
         myText.setSubstringColors(gl, inputHandler.getSyntaxColors());
-        myText.setSubstringAtIndexColor(gl, selectionIndex, selection,
-                Color4.cyan);
+        myText.setSubstringAtIndexColor(gl, selectionIndex, selection, Color4.cyan);
         myText.finalizeColorScheme(gl);
     }
 
@@ -366,12 +322,9 @@ public class LiveShaderEditorGLEventListener extends ESightGLEventListener {
     }
 
     private void renderTexturesToScreen(GL3 gl, int width, int height) {
-        postprocessShader.setUniform("axesTexture", axesFBO.getTexture()
-                .getMultitexNumber());
-        postprocessShader.setUniform("starTexture", starFBO.getTexture()
-                .getMultitexNumber());
-        postprocessShader.setUniform("hudTexture", hudFBO.getTexture()
-                .getMultitexNumber());
+        postprocessShader.setUniform("axesTexture", axesFBO.getTexture().getMultitexNumber());
+        postprocessShader.setUniform("starTexture", starFBO.getTexture().getMultitexNumber());
+        postprocessShader.setUniform("hudTexture", hudFBO.getTexture().getMultitexNumber());
 
         postprocessShader.setUniform("axesBrightness", 4f);
         postprocessShader.setUniform("starBrightness", 4f);
@@ -397,8 +350,7 @@ public class LiveShaderEditorGLEventListener extends ESightGLEventListener {
     public void reshape(GLAutoDrawable drawable, int x, int y, int w, int h) {
         try {
             final int status = drawable.getContext().makeCurrent();
-            if ((status != GLContext.CONTEXT_CURRENT)
-                    && (status != GLContext.CONTEXT_CURRENT_NEW)) {
+            if ((status != GLContext.CONTEXT_CURRENT) && (status != GLContext.CONTEXT_CURRENT_NEW)) {
                 System.err.println("Error swapping context to onscreen.");
             }
         } catch (final GLException e) {
@@ -420,13 +372,12 @@ public class LiveShaderEditorGLEventListener extends ESightGLEventListener {
         axesFBO.init(gl);
     }
 
-    private void setLiveFragmentShader(GL3 gl, ShaderProgram target,
-            File vertexShaderFile, String fragmentShaderFileName) {
+    private void setLiveFragmentShader(GL3 gl, ShaderProgram target, File vertexShaderFile,
+            String fragmentShaderFileName) {
         vsFile = vertexShaderFile;
         fsFile = null;
         try {
-            liveShader = loader.createProgram(gl, "live", vertexShaderFile,
-                    new File(fragmentShaderFileName));
+            liveShader = loader.createProgram(gl, "live", vertexShaderFile, new File(fragmentShaderFileName));
             inputHandler.setText(new File(fragmentShaderFileName));
             liveShader.init(gl);
         } catch (FileNotFoundException e) {
@@ -436,13 +387,11 @@ public class LiveShaderEditorGLEventListener extends ESightGLEventListener {
         }
     }
 
-    private void setLiveVertexShader(GL3 gl, ShaderProgram target,
-            String vertexShaderFileName, File fragmentShaderFile) {
+    private void setLiveVertexShader(GL3 gl, ShaderProgram target, String vertexShaderFileName, File fragmentShaderFile) {
         vsFile = null;
         fsFile = fragmentShaderFile;
         try {
-            liveShader = loader.createProgram(gl, "live", new File(
-                    vertexShaderFileName), fragmentShaderFile);
+            liveShader = loader.createProgram(gl, "live", new File(vertexShaderFileName), fragmentShaderFile);
             inputHandler.setText(new File(vertexShaderFileName));
             liveShader.init(gl);
         } catch (FileNotFoundException e) {
@@ -459,11 +408,9 @@ public class LiveShaderEditorGLEventListener extends ESightGLEventListener {
             String newCompilerMessage = "";
             try {
                 if (fsFile == null) {
-                    editedShader = loader.createProgram(gl, "live", vsFile,
-                            inputHandler.getText());
+                    editedShader = loader.createProgram(gl, "live", vsFile, inputHandler.getText());
                 } else {
-                    editedShader = loader.createProgram(gl, "live",
-                            inputHandler.getText(), fsFile);
+                    editedShader = loader.createProgram(gl, "live", inputHandler.getText(), fsFile);
                 }
                 editedShader.init(gl);
             } catch (FileNotFoundException e) {
@@ -481,8 +428,7 @@ public class LiveShaderEditorGLEventListener extends ESightGLEventListener {
                 liveShader = editedShader;
 
                 liveShader.setUniformMatrix("NormalMatrix", new MatF3());
-                final MatF4 p = MatrixFMath.perspective(fovy, aspect, zNear,
-                        zFar);
+                final MatF4 p = MatrixFMath.perspective(fovy, aspect, zNear, zFar);
                 liveShader.setUniformMatrix("PMatrix", p);
                 liveShader.setUniformMatrix("SMatrix", MatrixFMath.scale(1));
                 temp.delete(gl);
